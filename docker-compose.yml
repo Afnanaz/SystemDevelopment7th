@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-  # Traefik Reverse Proxy
   traefik:
     image: traefik:v2.10
     command:
@@ -11,8 +10,8 @@ services:
       - "--providers.file.filename=/etc/traefik/dynamic.yml"
       - "--entrypoints.web.address=:80"
     ports:
-      - "80:80"
-      - "8080:8080"
+      - "80:80"      
+      - "8080:8080"  
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik-dynamic.yml:/etc/traefik/dynamic.yml:ro
@@ -29,6 +28,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.app-stable.loadbalancer.server.port=8080"
+      - "traefik.http.routers.app-stable.rule=Host(`ignore.me`)"
 
   # Canary version (v2) - 10% of traffic
   app-canary:
@@ -42,3 +42,4 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.app-canary.loadbalancer.server.port=8080"
+      - "traefik.http.routers.app-canary.rule=Host(`ignore.me`)"
